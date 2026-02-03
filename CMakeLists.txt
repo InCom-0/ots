@@ -41,11 +41,11 @@ endif()
 include(CMake_dependencies.cmake) ### Loads and declares the required external libraries using CPM or CMake's FetchContent.
 
 if(ots_BUILD_SHARED_LIB)
-  add_library(ots-lib SHARED)
+  add_library(ots SHARED)
 else()
-  add_library(ots-lib STATIC)
+  add_library(ots STATIC)
 endif()
-add_library(ots-lib::ots-lib ALIAS ots-lib)
+add_library(ots::ots ALIAS ots)
 
 set(OTS_SOURCES
   src/avar.cc
@@ -89,41 +89,37 @@ set(OTS_SOURCES
   src/vvar.cc
 )
 
-target_sources(ots-lib PRIVATE ${OTS_SOURCES})
-target_sources(ots-lib
+target_sources(ots PRIVATE ${OTS_SOURCES})
+target_sources(ots
   PUBLIC
   FILE_SET pub_headers
   TYPE HEADERS
   BASE_DIRS
   include)
 
-target_sources(ots-lib
+target_sources(ots
   PRIVATE
   FILE_SET priv_headers
   TYPE HEADERS
   BASE_DIRS
   src)
 
-target_sources(ots-lib
+target_sources(ots
   PRIVATE
   FILE_SET priv_auto_config
   TYPE HEADERS
   BASE_DIRS
   cmake/config/auto)
 
-if(ZLIB_ADDED)
-  if(TARGET zlibstatic)
-    add_library(ots-lib::ZLIB ALIAS zlibstatic)
-  else()
-    message(FATAL_ERROR "We are trying to build ZLIB from source, but ZLIB::ZLIBSTATIC target is not defiend. This should be impossible")
-  endif()
+if(TARGET PkgConfig::ZLIB_PC)
+  target_link_libraries(ots PRIVATE PkgConfig::ZLIB_PC)
 else()
-  add_library(ots-lib::ZLIB ALIAS ZLIB::ZLIB)
+  target_link_libraries(ots PRIVATE ZLIB::ZLIBSTATIC)
 endif()
 
-target_link_libraries(ots-lib PRIVATE woff2dec ots-lib::ZLIB)
+target_link_libraries(ots PRIVATE woff2dec)
 
-target_compile_features(ots-lib PRIVATE cxx_std_11)
+target_compile_features(ots PRIVATE cxx_std_11)
 
 # if(ots_BUILD_SHARED_LIB)
 #   set_target_properties(otfccxx PROPERTIES
@@ -171,7 +167,7 @@ add_custom_command(
   VERBATIM)
 
 add_custom_target(ENSUREAutoFileDeps ALL DEPENDS ${COM_OUTPUT})
-add_dependencies(ots-lib ENSUREAutoFileDeps)
+add_dependencies(ots ENSUREAutoFileDeps)
 
 
 ########################################################
@@ -188,13 +184,12 @@ endif()
 if(CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC")
   add_compile_options(/utf-8)
   add_compile_definitions(NOMINMAX)
-endif()
-
-set_source_files_properties(
+  set_source_files_properties(
     src/glyf.cc
     PROPERTIES
     COMPILE_OPTIONS "/wd4267"
   )
+endif()
 
 
 #####################################################################
@@ -202,7 +197,7 @@ set_source_files_properties(
 #####################################################################
 if(ots_BUILD_SHARED_LIB)
   install(
-    TARGETS ots-lib
+    TARGETS ots
     EXPORT ots_target
     RUNTIME_DEPENDENCY_SET ots_depset
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
