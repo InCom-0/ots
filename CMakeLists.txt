@@ -190,6 +190,12 @@ if(CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC")
   add_compile_definitions(NOMINMAX)
 endif()
 
+set_source_files_properties(
+    src/glyf.cc
+    PROPERTIES
+    COMPILE_OPTIONS "/wd4267"
+  )
+
 
 #####################################################################
 ### Installing, packaging ###
