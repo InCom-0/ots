@@ -23,6 +23,8 @@ endif()
 
 # If we cannot find it using PkgConfig, we build a static version from source
 if(NOT TARGET PkgConfig::ZLIB_PC)
+  set(__BACKUP_CPM_USE_LOCAL_PACKAGES ${CPM_USE_LOCAL_PACKAGES})
+  set(CPM_USE_LOCAL_PACKAGES OFF)
   CPMAddPackage(
     URI "gh:madler/zlib@1.3.1.2"
     OPTIONS
@@ -31,6 +33,9 @@ if(NOT TARGET PkgConfig::ZLIB_PC)
     "ZLIB_BUILD_TESTING OFF"
     NAME ZLIB
   )
+  set(CPM_USE_LOCAL_PACKAGES ${__BACKUP_CPM_USE_LOCAL_PACKAGES})
+  unset(__BACKUP_CPM_USE_LOCAL_PACKAGES)
+  add_library(ZLIB::ZLIB ALIAS zlibstatic)
 endif()
 
 # WOFF2
