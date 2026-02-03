@@ -18,7 +18,7 @@ if(PkgConfig_FOUND)
     message(STATUS "PkgConfig did not find zlib. ots project will try to build and link static version of zlib.")
   endif()
 else()
-  message(STATUS "Could NOT find PkgConfig. ots project will try to build and link static version of zlib.\n")
+  message(STATUS "Could NOT find PkgConfig. ots project will try to build and link static version of zlib.")
 endif()
 
 # If we cannot find it using PkgConfig, we build a static version from source
