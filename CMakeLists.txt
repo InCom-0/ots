@@ -116,7 +116,7 @@ target_sources(ots
 if(TARGET PkgConfig::ZLIB_PC)
   target_link_libraries(ots PRIVATE PkgConfig::ZLIB_PC)
 else()
-  target_link_libraries(ots PRIVATE ZLIB::ZLIB)
+  target_link_libraries(ots PRIVATE ZLIB::ZLIBSTATIC)
 endif()
 
 target_link_libraries(ots PRIVATE woff2dec)
