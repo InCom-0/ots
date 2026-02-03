@@ -10,7 +10,7 @@ endif()
 # ZLIB
 # ZLIB provides .pc so we prefer to find it using PkgConfig
 set(PKG_CONFIG_USE_STATIC_LIBS ON)
-find_package(PkgConfig)
+find_package(PkgConfig QUIET)
 if(PkgConfig_FOUND)
   # Check the module name with: pkg-config --modversion zlib
   pkg_check_modules(ZLIB_PC IMPORTED_TARGET zlib)
