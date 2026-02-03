@@ -197,48 +197,48 @@ endif()
 #####################################################################
 ### Installing, packaging ###
 #####################################################################
-if(ots_BUILD_SHARED_LIB)
-  install(
-    TARGETS ots
-    EXPORT ots_target
-    RUNTIME_DEPENDENCY_SET ots_depset
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    FILE_SET pub_headers
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-  )
+# if(ots_BUILD_SHARED_LIB)
+#   install(
+#     TARGETS ots
+#     EXPORT ots_target
+#     RUNTIME_DEPENDENCY_SET ots_depset
+#     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+#     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#     FILE_SET pub_headers
+#     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+#   )
 
-  # When compling with MinGW we need to include the runtime DLLs along
-  if(MINGW)
-    get_filename_component(OTS_CXX_COMPILER_DIR ${CMAKE_CXX_COMPILER} DIRECTORY)
-    install(
-      RUNTIME_DEPENDENCY_SET ots_depset
-      PRE_EXCLUDE_REGEXES
-      [[api-ms-.*]]
-      [[ext-ms-.*]]
-      POST_INCLUDE_REGEXES
-      [[libstdc\+\+*]]
-      [[libgcc_s*]]
-      [[libwoff2*]]
-      [[libharfbuzz*]]
-      POST_EXCLUDE_REGEXES
-      [[\\*.dll]]
-      DIRECTORIES
-      ${OTS_CXX_COMPILER_DIR}
-    )
-  endif()
+#   # When compling with MinGW we need to include the runtime DLLs along
+#   if(MINGW)
+#     get_filename_component(OTS_CXX_COMPILER_DIR ${CMAKE_CXX_COMPILER} DIRECTORY)
+#     install(
+#       RUNTIME_DEPENDENCY_SET ots_depset
+#       PRE_EXCLUDE_REGEXES
+#       [[api-ms-.*]]
+#       [[ext-ms-.*]]
+#       POST_INCLUDE_REGEXES
+#       [[libstdc\+\+*]]
+#       [[libgcc_s*]]
+#       [[libwoff2*]]
+#       [[libharfbuzz*]]
+#       POST_EXCLUDE_REGEXES
+#       [[\\*.dll]]
+#       DIRECTORIES
+#       ${OTS_CXX_COMPILER_DIR}
+#     )
+#   endif()
 
-  # Creating a script for being able to use 'find_package')
-  install(
-    EXPORT ots_target
-    NAMESPACE ots::
-    DESTINATION lib/cmake/ots
-  )
+#   # Creating a script for being able to use 'find_package')
+#   install(
+#     EXPORT ots_target
+#     NAMESPACE ots::
+#     DESTINATION lib/cmake/ots
+#   )
 
-else()
-  message(STATUS "Installing ots is not available because it is being built as STATIC library")
-endif()
+# else()
+#   message(STATUS "Installing ots is not available because it is being built as STATIC library")
+# endif()
 
 # if(PROJECT_IS_TOP_LEVEL AND ots_BUILD_SHARED_LIB)
 #   add_subdirectory(cmake/packaging)
