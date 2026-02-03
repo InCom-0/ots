@@ -25,6 +25,8 @@ option(ots_BUILD_VALIDATOR_CHECKER "Build ots-validator-checker executable" ${ot
 option(ots_BUILD_SIDE_BY_SIDE "Build ots-side-by-side executable" ${ots_BUILD_EXECUTABLES})
 option(ots_BUILD_CFF_CHARSTRING "Build ots-cff_charstring executable" ${ots_BUILD_EXECUTABLES})
 
+include(cmake/stdlibQuery.cmake)
+
 
 #####################################################################
 ### Staging ###
