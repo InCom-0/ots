@@ -1,2 +1,10 @@
 /build
 /env
+
+/build_cmake
+/cmake/config/auto
+CMakeUserPresets.json
+
+.vscode/
+.cache/
+

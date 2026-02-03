@@ -154,7 +154,7 @@
         {
             "name": "_common",
             "hidden": true,
-            "binaryDir": "${sourceDir}/build/",
+            "binaryDir": "${sourceDir}/build_cmake/",
             "generator": "Ninja",
             "cacheVariables": {
                 "CMAKE_EXPORT_COMPILE_COMMANDS": true,

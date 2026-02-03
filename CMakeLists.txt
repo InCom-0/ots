@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.30...4.0)
+cmake_minimum_required(VERSION 3.30...4.2)
 
 project(ots
   HOMEPAGE_URL "https://github.com/InCom-0/ots"
@@ -10,19 +10,20 @@ project(ots
 set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 
+option(ots_BUILD_SHARED_LIB "Build a shared version of otfccxx" ${BUILD_SHARED_LIBS})
+option(ots_STAGE_OUTPUTS "Stage build output artifacts into proper directory structure" ${PROJECT_IS_TOP_LEVEL})
+
 option(ots_GRAPHITE "Sanitize Graphite tables" ON)
 option(ots_SYNTHESIZE_MISSING_GVAR "Synthesize an empty gvar if fvar is present" ON)
 option(ots_COLR_CYCLE_CHECK "Reject fonts with cycles in COLRv1 paint graph" ON)
 
-option(ots_STAGE_OUTPUTS "Stage build output artifacts into proper directory structure" ${PROJECT_IS_TOP_LEVEL})
-
-option(ots_BUILD_DEMOS "Build demos for otfccxx" ${PROJECT_IS_TOP_LEVEL})
-option(ots_BUILD_SHARED_LIB "Build a shared version of otfccxx" ${BUILD_SHARED_LIBS})
-
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-
-  
-endif()
+option(ots_BUILD_EXECUTABLES "Build all executables (individually overrideable)" ${PROJECT_IS_TOP_LEVEL})
+option(ots_BUILD_SANITIZE "Build ots-sanitize executable" ${ots_BUILD_EXECUTABLES})
+option(ots_BUILD_FUZZER "Build ots-fuzzer executable" ${ots_BUILD_EXECUTABLES})
+option(ots_BUILD_IDEMPOTENT "Build ots-idempotent executable" ${ots_BUILD_EXECUTABLES})
+option(ots_BUILD_VALIDATOR_CHECKER "Build ots-validator-checker executable" ${ots_BUILD_EXECUTABLES})
+option(ots_BUILD_SIDE_BY_SIDE "Build ots-side-by-side executable" ${ots_BUILD_EXECUTABLES})
+option(ots_BUILD_CFF_CHARSTRING "Build ots-cff_charstring executable" ${ots_BUILD_EXECUTABLES})
 
 
 #####################################################################
@@ -44,9 +45,51 @@ if(ots_BUILD_SHARED_LIB)
 else()
   add_library(ots-lib STATIC)
 endif()
-add_library(ots-lib::ots-lib ALIAS otfccxx)
+add_library(ots-lib::ots-lib ALIAS ots-lib)
 
-target_sources(ots-lib PRIVATE src/otfccxx.cpp src/fmem_file.cpp src/machinery_stderr_capt.cpp)
+set(OTS_SOURCES
+  src/avar.cc
+  src/cff.cc
+  src/cff_charstring.cc
+  src/cmap.cc
+  src/colr.cc
+  src/cpal.cc
+  src/cvar.cc
+  src/cvt.cc
+  src/fpgm.cc
+  src/fvar.cc
+  src/gasp.cc
+  src/gdef.cc
+  src/glyf.cc
+  src/gpos.cc
+  src/gsub.cc
+  src/gvar.cc
+  src/hdmx.cc
+  src/head.cc
+  src/hhea.cc
+  src/hvar.cc
+  src/kern.cc
+  src/layout.cc
+  src/loca.cc
+  src/ltsh.cc
+  src/math.cc
+  src/maxp.cc
+  src/metrics.cc
+  src/mvar.cc
+  src/name.cc
+  src/os2.cc
+  src/ots.cc
+  src/post.cc
+  src/prep.cc
+  src/stat.cc
+  src/variations.cc
+  src/vdmx.cc
+  src/vhea.cc
+  src/vorg.cc
+  src/vvar.cc
+)
+
+target_sources(ots-lib PRIVATE ${OTS_SOURCES})
 target_sources(ots-lib
   PUBLIC
   FILE_SET pub_headers
@@ -61,7 +104,24 @@ target_sources(ots-lib
   BASE_DIRS
   src)
 
-target_link_libraries(ots-lib PRIVATE woff2dec)
+target_sources(ots-lib
+  PRIVATE
+  FILE_SET priv_auto_config
+  TYPE HEADERS
+  BASE_DIRS
+  cmake/config/auto)
+
+if(ZLIB_ADDED)
+  if(TARGET zlibstatic)
+    add_library(ots-lib::ZLIB ALIAS zlibstatic)
+  else()
+    message(FATAL_ERROR "We are trying to build ZLIB from source, but ZLIB::ZLIBSTATIC target is not defiend. This should be impossible")
+  endif()
+else()
+  add_library(ots-lib::ZLIB ALIAS ZLIB::ZLIB)
+endif()
+
+target_link_libraries(ots-lib PRIVATE woff2dec ots-lib::ZLIB)
 
 target_compile_features(ots-lib PRIVATE cxx_std_11)
 
@@ -76,11 +136,48 @@ target_compile_features(ots-lib PRIVATE cxx_std_11)
 #   )
 # endif()
 
+#############################################################
+### Automatic code generation (for version numbers, etc.) ###
+#############################################################
+set(COM_OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/cmake/config/auto/config.h)
+
+# Values passed to cmake/config/configUpdate.cmake (script mode, no project context).
+set(HAVE_WIN32 0)
+if(WIN32)
+  set(HAVE_WIN32 1)
+endif()
+
+set(OTS_DEBUG 0)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  set(OTS_DEBUG 1)
+endif()
+
+add_custom_command(
+  OUTPUT ${COM_OUTPUT}
+  COMMAND ${CMAKE_COMMAND}
+  -DTOP_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+  -DHAVE_WIN32=${HAVE_WIN32}
+  -DOTS_COLR_CYCLE_CHECK=${ots_COLR_CYCLE_CHECK}
+  -DOTS_DEBUG=${OTS_DEBUG}
+  -DOTS_GRAPHITE=${ots_GRAPHITE}
+  -DOTS_SYNTHESIZE_MISSING_GVAR=${ots_SYNTHESIZE_MISSING_GVAR}
+  -DPROJECT_NAME=${PROJECT_NAME}
+  -DFULL_VERSION=${PROJECT_VERSION}
+  -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/config/configUpdate.cmake
+  DEPENDS
+  ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/config/config.h.in
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/config/configUpdate.cmake
+  VERBATIM)
+
+add_custom_target(ENSUREAutoFileDeps ALL DEPENDS ${COM_OUTPUT})
+add_dependencies(ots-lib ENSUREAutoFileDeps)
+
 
 ########################################################
 ### Executable targets ###
 ########################################################
-if(ots_BUILD_DEMOS)
+if(ots_BUILD_SANITIZE)
 
 endif()
 

@@ -1,0 +1,15 @@
+#pragma once
+
+#cmakedefine HAVE_WIN32 1
+
+#cmakedefine OTS_COLR_CYCLE_CHECK 1
+
+#cmakedefine OTS_DEBUG 1
+
+#cmakedefine OTS_GRAPHITE 1
+
+#cmakedefine OTS_SYNTHESIZE_MISSING_GVAR 1
+
+#define PACKAGE "@PROJECT_NAME@"
+
+#define VERSION "@FULL_VERSION@"
