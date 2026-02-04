@@ -5,12 +5,13 @@ project(ots
   VERSION "9.2.0"
   DESCRIPTION
   "Sanitizer for OpenType."
-  LANGUAGES C CXX)
+  LANGUAGES C CXX
+)
 
 set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 
-option(ots_BUILD_SHARED_LIB "Build a shared version of otfccxx" ${BUILD_SHARED_LIBS})
+option(ots_BUILD_SHARED_LIB "Build a shared version of ots" ${BUILD_SHARED_LIBS})
 option(ots_STAGE_OUTPUTS "Stage build output artifacts into proper directory structure" ${PROJECT_IS_TOP_LEVEL})
 
 option(ots_GRAPHITE "Sanitize Graphite tables" ON)
