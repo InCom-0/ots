@@ -12,6 +12,8 @@ set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 
 option(ots_BUILD_SHARED_LIB "Build a shared version of ots" ${BUILD_SHARED_LIBS})
+option(ots_USE_LOCAL_PACKAGES "Use local (usually system installed) packages for dependencies." ON) # Work only if CPM_USE_LOCAL_PACKAGES is not set
+option(ots_USE_LOCAL_PACKAGES_ONLY "Forbid the build system from downloading missing dependencies." OFF) # Work only if CPM_LOCAL_PACKAGES_ONLY is not set
 option(ots_STAGE_OUTPUTS "Stage build output artifacts into proper directory structure" ${PROJECT_IS_TOP_LEVEL})
 
 option(ots_GRAPHITE "Sanitize Graphite tables" ON)
