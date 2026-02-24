@@ -9,11 +9,11 @@ project(ots
 )
 
 set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
-option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
+option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 option(ots_BUILD_SHARED_LIB "Build a shared version of ots" ${BUILD_SHARED_LIBS})
 option(ots_STAGE_OUTPUTS "Stage build output artifacts into proper directory structure" ${PROJECT_IS_TOP_LEVEL})
 
-option(CPM_USE_LOCAL_PACKAGES "Use local (usually system installed) packages for dependencies." OFF)
+option(CPM_USE_LOCAL_PACKAGES "Use local (usually system installed) packages for dependencies." ON)
 option(CPM_LOCAL_PACKAGES_ONLY "Forbid the build system from downloading missing dependencies." OFF)
 
 option(ots_GRAPHITE "Sanitize Graphite tables" ON)
