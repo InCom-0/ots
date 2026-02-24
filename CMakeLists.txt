@@ -9,12 +9,12 @@ project(ots
 )
 
 set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
-option(BUILD_SHARED_LIBS "Build shared libraries" ON)
-
+option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 option(ots_BUILD_SHARED_LIB "Build a shared version of ots" ${BUILD_SHARED_LIBS})
-option(ots_USE_LOCAL_PACKAGES "Use local (usually system installed) packages for dependencies." ON) # Work only if CPM_USE_LOCAL_PACKAGES is not set
-option(ots_USE_LOCAL_PACKAGES_ONLY "Forbid the build system from downloading missing dependencies." OFF) # Work only if CPM_LOCAL_PACKAGES_ONLY is not set
 option(ots_STAGE_OUTPUTS "Stage build output artifacts into proper directory structure" ${PROJECT_IS_TOP_LEVEL})
+
+option(CPM_USE_LOCAL_PACKAGES "Use local (usually system installed) packages for dependencies." OFF)
+option(CPM_LOCAL_PACKAGES_ONLY "Forbid the build system from downloading missing dependencies." OFF)
 
 option(ots_GRAPHITE "Sanitize Graphite tables" ON)
 option(ots_SYNTHESIZE_MISSING_GVAR "Synthesize an empty gvar if fvar is present" ON)
@@ -116,11 +116,8 @@ target_sources(ots
   BASE_DIRS
   cmake/config/auto)
 
-if(TARGET PkgConfig::ZLIB_PC)
-  target_link_libraries(ots PRIVATE PkgConfig::ZLIB_PC)
-else()
-  target_link_libraries(ots PRIVATE ZLIB::ZLIBSTATIC)
-endif()
+
+target_link_libraries(ots PRIVATE ZLIB::ZLIB)
 
 target_link_libraries(ots PRIVATE woff2dec)
 
