@@ -14,7 +14,9 @@ endif()
 
 set(ZLIB_USE_STATIC_LIBS ${ots_BUILD_STATIC_LIB}) ### Note: This is useful for FindZLIB.cmake only
 CPMAddPackage(
-    URI "gh:madler/zlib@1.3.1"
+    URL https://github.com/madler/zlib/releases/download/v1.3.2/zlib-1.3.2.tar.xz
+    URL_HASH SHA256=d7a0654783a4da529d1bb793b7ad9c3318020af77667bcae35f95d0e42a792f3
+    EXCLUDE_FROM_ALL TRUE
     OPTIONS
     "ZLIB_BUILD_SHARED ${ots_BUILD_SHARED_LIB}"
     "ZLIB_BUILD_STATIC ${ots_BUILD_STATIC_LIB}"
@@ -23,6 +25,7 @@ CPMAddPackage(
     "ZLIB_BUILD_TESTING OFF"
     "ZLIB_BUILD_MINIZIP OFF"
     "ZLIB_BUILD_EXAMPLES OFF"
+    VERSION 1.3
     NAME ZLIB
 )
 unset(ZLIB_USE_STATIC_LIBS)
