@@ -119,7 +119,7 @@ target_sources(ots
 
 target_link_libraries(ots PRIVATE ZLIB::ZLIB)
 
-target_link_libraries(ots PRIVATE woff2dec)
+target_link_libraries(ots PRIVATE WOFF2::woff2dec)
 
 target_compile_features(ots PRIVATE cxx_std_11)
 
