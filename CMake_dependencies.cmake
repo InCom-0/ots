@@ -1,9 +1,9 @@
 
-include(cmake/CPM.cmake)
+include(cmake/lefticus/CPM.cmake)
 
 
 # We need to provide custom CMake module/script for WOFF2 (FindWOFF2.cmake)
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/incom/modules")
 
 
 if(ots_BUILD_SHARED_LIB)
