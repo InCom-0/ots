@@ -1,6 +1,6 @@
 #pragma once
 
-#cmakedefine HAVE_WIN32 1
+#cmakedefine OTS_HAVE_WIN32 1
 
 #cmakedefine OTS_COLR_CYCLE_CHECK 1
 
@@ -12,4 +12,4 @@
 
 #define PACKAGE "@PROJECT_NAME@"
 
-#define VERSION "@FULL_VERSION@"
+#define VERSION "@PROJECT_VERSION@"
