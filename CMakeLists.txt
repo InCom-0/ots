@@ -137,7 +137,6 @@ target_compile_features(ots PRIVATE cxx_std_11)
 #############################################################
 ### Automatic code generation (for version numbers, etc.) ###
 #############################################################
-set(COM_OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/cmake/config/auto/config.h)
 
 # Values passed to cmake/config/configUpdate.cmake (script mode, no project context).
 set(HAVE_WIN32 0)
@@ -150,17 +149,19 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   set(OTS_DEBUG 1)
 endif()
 
+set(COM_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/generated/private_inc/auto/config.h)
 add_custom_command(
   OUTPUT ${COM_OUTPUT}
   COMMAND ${CMAKE_COMMAND}
-  -DTOP_DIR=${CMAKE_CURRENT_SOURCE_DIR}
-  -DHAVE_WIN32=${HAVE_WIN32}
-  -DOTS_COLR_CYCLE_CHECK=${ots_COLR_CYCLE_CHECK}
-  -DOTS_DEBUG=${OTS_DEBUG}
-  -DOTS_GRAPHITE=${ots_GRAPHITE}
-  -DOTS_SYNTHESIZE_MISSING_GVAR=${ots_SYNTHESIZE_MISSING_GVAR}
-  -DPROJECT_NAME=${PROJECT_NAME}
-  -DFULL_VERSION=${PROJECT_VERSION}
+  -D TO_OUTPUT=${COM_OUTPUT}
+  -D TO_INPUT=${CMAKE_CURRENT_SOURCE_DIR}/cmake/config/config.h.in
+  -D HAVE_WIN32=${HAVE_WIN32}
+  -D OTS_COLR_CYCLE_CHECK=${ots_COLR_CYCLE_CHECK}
+  -D OTS_DEBUG=${OTS_DEBUG}
+  -D OTS_GRAPHITE=${ots_GRAPHITE}
+  -D OTS_SYNTHESIZE_MISSING_GVAR=${ots_SYNTHESIZE_MISSING_GVAR}
+  -D PROJECT_NAME=${PROJECT_NAME}
+  -D FULL_VERSION=${PROJECT_VERSION}
   -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/config/configUpdate.cmake
   DEPENDS
   ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
@@ -198,16 +199,17 @@ endif()
 ### Installing, packaging ###
 #####################################################################
 # if(ots_BUILD_SHARED_LIB)
-#   install(
-#     TARGETS ots
-#     EXPORT ots_target
-#     RUNTIME_DEPENDENCY_SET ots_depset
-#     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-#     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-#     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-#     FILE_SET pub_headers
-#     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-#   )
+# install(
+#   TARGETS ots
+#   EXPORT ots_target
+#   RUNTIME_DEPENDENCY_SET ots_depset
+#   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+#   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#   PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+#   FILE_SET pub_headers
+#   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+# )
 
 #   # When compling with MinGW we need to include the runtime DLLs along
 #   if(MINGW)
