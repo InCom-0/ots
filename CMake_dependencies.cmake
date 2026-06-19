@@ -1,5 +1,5 @@
 
-include(cmake/CPM_0.42.1.cmake)
+include(cmake/CPM_0.42.3.cmake)
 
 
 # We need to provide custom CMake module/script for WOFF2 (FindWOFF2.cmake)
