@@ -1,7 +1,7 @@
 project('ots', 'c', 'cpp',
   version: '9.2.0',
   default_options : ['cpp_std=c++11', 'default_library=static', 'warning_level=2'],
-  meson_version : '>= 0.55.2',
+  meson_version : '>= 0.58.0',
 )
 
 subdir('tests')
@@ -265,6 +265,7 @@ cff_charstring = executable('cff_charstring',
   include_directories: include_directories(['include', 'src']),
   link_with: libots,
   dependencies: gtest,
+  override_options: ['cpp_std=c++17'],
 )
 
 test('cff_charstring', cff_charstring)
@@ -275,6 +276,7 @@ passthru_test = executable('passthru_test',
   include_directories: include_directories(['include']),
   link_with: libots,
   dependencies: gtest,
+  override_options: ['cpp_std=c++17'],
 )
 
 test('passthru_test', passthru_test,
